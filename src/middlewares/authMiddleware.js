@@ -1,0 +1,33 @@
+import jwt from "jsonwebtoken";
+import "dotenv";
+
+
+export function authMiddleware(req, res, next) {
+    const authHeader = req.headers.authorization;
+
+    if(!authHeader) {
+        return res.status(401).json({
+            message: "Token não fornecido"
+        });
+    }
+
+    const [, token] = authHeader.split(" ");
+
+    if(!token) {
+        return res.status(401).json({
+            message: "Token mal formatado"
+        });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
+
+        req.user = decoded;
+
+        return next();
+    } catch (err) {
+        return res.status(401).json({
+            message: "Token inválido ou expirado"
+        });
+    }
+}
