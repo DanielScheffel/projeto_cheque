@@ -4,15 +4,16 @@ import pool from "../database/database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { gerenteMiddleware } from "../middlewares/gerenteMiddleware.js";
 
 const router = express.Router();
 
-router.post("/cadastro", async (req, res) => {
-    const { name, password, usuario, status } = req.body;
+router.post("/cadastro", authMiddleware, gerenteMiddleware, async (req, res) => {
+    const { name, password, usuario, status, tipo_usuario } = req.body;
 
     try {
-        if(!name || !password || !usuario || !status) {
-            return res.status(400).json({ message: "Nome, senha, usuario e status são obrigatórios"});
+        if(!name || !password || !usuario || !status || !tipo_usuario) {
+            return res.status(400).json({ message: "Todos os campos são obrigatórios"});
         }
 
         const statusPermission = ["ativo", "inativo"];
@@ -22,7 +23,11 @@ router.post("/cadastro", async (req, res) => {
             });
         }
 
-        const [rows] = await pool.query("SELECT usuario FROM gerencia WHERE nome = ?", [name]);
+        if (!["gerente", "usuario"].includes(tipo_usuario)) {
+            return res.status(400).json({ message: "Tipo de usuário inválido"})
+        }
+
+        const [rows] = await pool.query("SELECT usuario FROM gerencia WHERE usuario = ?", [name]);
 
         if(rows.length > 0){
             return res.status(409).json({ message : "Usuário já existe" });
@@ -30,7 +35,7 @@ router.post("/cadastro", async (req, res) => {
 
         const senhaHash = await bcrypt.hash(password, 10);
 
-        await pool.query(`INSERT INTO gerencia (usuario, status, senha, nome) VALUES (?, ?, ?, ?)`, [usuario, status, senhaHash, name]);
+        await pool.query(`INSERT INTO gerencia (usuario, status, senha, nome, tipo_usuario) VALUES (?, ?, ?, ?, ?)`, [usuario, status, senhaHash, name, tipo_usuario]);
 
         return res.status(201).json({
             message: "Usuário registrado com sucesso"
@@ -63,7 +68,7 @@ router.post("/login", async (req, res) => {
 
         const token = jwt.sign({
             usuario: user.usuario,
-            nome: user.nome
+            tipo_usuario: user.tipo_usuario
         }, process.env.JWT_KEY, { expiresIn: process.env.JWT_EXPIRES })
 
         return res.json({ message : "Login realizado com sucesso", token})
