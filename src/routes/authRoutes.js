@@ -5,10 +5,11 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { gerenteMiddleware } from "../middlewares/gerenteMiddleware.js";
+import { statusMiddleware } from "../middlewares/statusMiddleware.js";
 
 const router = express.Router();
 
-router.post("/cadastro", authMiddleware, gerenteMiddleware, async (req, res) => {
+router.post("/cadastro", authMiddleware, gerenteMiddleware, statusMiddleware, async (req, res) => {
     const { name, password, usuario, status, tipo_usuario } = req.body;
 
     try {

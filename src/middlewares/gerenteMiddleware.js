@@ -5,24 +5,11 @@ export async function gerenteMiddleware(req, res, next) {
         const userId = req.user.usuario;
 
         const [rows] = await pool.query(
-            "SELECT status, tipo_usuario FROM gerencia WHERE usuario = ?", [userId]
+            "SELECT tipo_usuario FROM gerencia WHERE usuario = ?", [userId]
         )
 
-        if (rows.length === 0) {
-            return res.status(404).json({
-                message: "Usuário não encontrado"
-            });
-        }
 
-        const gerente = rows[0];
-
-        if(gerente.status !== "ativo"){
-            return res.status(403).json({
-                message: "Usuário inativo."
-            });
-        } 
-
-        if(gerente.tipo_usuario !== "gerente") {
+        if(rows.length === 0 || rows[0].tipo_usuar !== "gerente") {
             return res.status(403).json({
                 message: "Acesso permitido apenas para gerente"
             })
