@@ -53,38 +53,6 @@ O projeto segue o padrão:
 
 ---
 
-## 🧪 Exemplos de uso (Hoppscotch)
-
-### 🔐 Login
-```http
-POST /login
-
-![Rota de Login](/images/login.png)
-
-```
-
-<!-- 
-### 💳 Criar cheque
-POST /cheque/criar
-
-![Rota de Criação de cheque](images/cheque_criar.png)
-
-
-### 📋 Listar cheques
-GET /cheque/listar
-
-![Rota de lista de cheques](images/cheue_lista.png)
-
-
-### 🗑️ Deletar cheque
-DELETE /cheque/deletar
-
-![Rota de deletar cheques](images/cheque_deletar.png)
-
-``` -->
-
-
-
 ## ▶️ Como executar o projeto
 
 1. Clone o repositório
