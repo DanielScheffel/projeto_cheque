@@ -3,7 +3,12 @@ import pool from "../database/database.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { statusMiddleware } from "../middlewares/statusMiddleware.js";
 import { gerenteMiddleware } from "../middlewares/gerenteMiddleware.js";
-import { atualizarStatusChequeController, criarChequeController, deletarChequeController, editarChequeController, listarChequeController } from "../controllers/chequeController.js";
+import { atualizarStatusChequeController, 
+  criarChequeController,
+  deletarChequeController, 
+  editarChequeController, 
+  listarChequeController 
+} from "../controllers/chequeController.js";
 
 
 const router = express.Router();

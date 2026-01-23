@@ -1,4 +1,10 @@
-import { atualizarStatusChequeService, criarChequeService, deletarChequeService, editarChequeService, listarChequeService } from "../services/serviceCheque.js";
+import { 
+    atualizarStatusChequeService, 
+    criarChequeService, 
+    deletarChequeService, 
+    editarChequeService, 
+    listarChequeService 
+} from "../services/serviceCheque.js";
 
 export async function criarChequeController(req, res) {
     const { numerocheque, valor, empresa, contato } = req.body;
