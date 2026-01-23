@@ -59,9 +59,11 @@ O projeto segue o padrão:
 ```http
 POST /login
 
-![Rota de Login](./images/login.png)
+![Rota de Login](/images/login.png)
 
+```
 
+<!-- 
 ### 💳 Criar cheque
 POST /cheque/criar
 
@@ -79,7 +81,7 @@ DELETE /cheque/deletar
 
 ![Rota de deletar cheques](images/cheque_deletar.png)
 
-```
+``` -->
 
 
 
