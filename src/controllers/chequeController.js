@@ -1,4 +1,4 @@
-import { criarChequeService, listarChequeService } from "../services/serviceCheque.js";
+import { criarChequeService, editarChequeService, listarChequeService } from "../services/serviceCheque.js";
 
 export async function criarChequeController(req, res) {
     const { numerocheque, valor, empresa, contato } = req.body;
@@ -34,4 +34,29 @@ export async function listarChequeController(req, res) {
             message: err.message
         });
     }
+}
+
+export async function editarChequeController(req, res) {
+    
+    const { numero } = req.params;
+    const { valor, empresa, contato } = req.body;
+
+    if(!valor || !empresa || !contato ) {
+        return res.status(400).json({
+            message: "Todos os campos são obrigatórios"
+        });
+    }
+
+    try {
+        await editarChequeService({ numero, valor, empresa, contato });
+
+        return res.json({
+            message: "Cheque atualizado com sucesso"
+        });
+    } catch (err) {
+        return res.status(404).json({
+            message: err.message
+        });
+    }
+
 }

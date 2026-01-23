@@ -29,3 +29,23 @@ export async function listarChequeService() {
 
     return rows;
 }
+
+export async function editarChequeService({ numero, valor, empresa, contato }) {
+    
+    const [rows] = await pool.query(
+        "SELECT numerocheque FROM cheque WHERE numerocheque = ?",
+        [numero]
+    );
+
+    if (rows.length === 0) {
+        throw new Error("Cheque não encontrado");
+    }
+
+    await pool.query(
+        `UPDATE cheque
+        SET valor = ?, empresa = ?, contato = ?
+        WHERE numerocheque = ?`,
+        [valor, empresa, contato, numero]
+    );
+
+}

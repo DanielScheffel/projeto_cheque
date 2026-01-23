@@ -3,7 +3,7 @@ import pool from "../database/database.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { statusMiddleware } from "../middlewares/statusMiddleware.js";
 import { gerenteMiddleware } from "../middlewares/gerenteMiddleware.js";
-import { criarChequeController, listarChequeController } from "../controllers/chequeController.js";
+import { criarChequeController, editarChequeController, listarChequeController } from "../controllers/chequeController.js";
 
 
 const router = express.Router();
@@ -21,37 +21,11 @@ router.get("/lista",
   listarChequeController
 );
 
-router.put(
-  "/:numero/editar",
+router.put("/:numero/editar",
   authMiddleware,
   statusMiddleware,
   gerenteMiddleware,
-  async (req, res) => {
-    const { numero } = req.params;
-    const { valor, empresa, contato } = req.body;
-
-    try {
-      const [rows] = await pool.query(
-        "SELECT numerocheque FROM cheque WHERE numerocheque = ?",
-        [numero]
-      );
-
-      if (rows.length === 0) {
-        return res.status(404).json({ message: "Cheque não encontrado" });
-      }
-
-      await pool.query(
-        `UPDATE cheque
-         SET valor = ?, empresa = ?, contato = ?
-         WHERE numerocheque = ?`,
-        [valor, empresa, contato, numero]
-      );
-
-      return res.json({ message: "Cheque atualizado com sucesso" });
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
-    }
-  }
+  editarChequeController
 );
 
 
