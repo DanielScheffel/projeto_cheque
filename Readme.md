@@ -59,7 +59,7 @@ O projeto segue o padrão:
 ```http
 POST /login
 
-![Rota de Login](images/login.png)
+![Rota de Login](./images/login.png)
 
 
 ### 💳 Criar cheque
