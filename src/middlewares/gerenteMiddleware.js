@@ -9,7 +9,7 @@ export async function gerenteMiddleware(req, res, next) {
         )
 
 
-        if(rows.length === 0 || rows[0].tipo_usuar !== "gerente") {
+        if(rows.length === 0 || rows[0].tipo_usuario !== "gerente") {
             return res.status(403).json({
                 message: "Acesso permitido apenas para gerente"
             })
