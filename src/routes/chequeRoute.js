@@ -3,7 +3,7 @@ import pool from "../database/database.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { statusMiddleware } from "../middlewares/statusMiddleware.js";
 import { gerenteMiddleware } from "../middlewares/gerenteMiddleware.js";
-import { criarChequeController } from "../controllers/chequeController.js";
+import { criarChequeController, listarChequeController } from "../controllers/chequeController.js";
 
 
 const router = express.Router();
@@ -15,20 +15,11 @@ router.post("/criar",
 
 )
 
-router.get("/lista", authMiddleware, statusMiddleware, async (req, res) => {
-    try {
-            const [rows] = await pool.query(
-                `SELECT numerocheque, valor, empresa, data, contato, gerencia_usuario, status_cheque
-                FROM cheque`
-            )
-
-            return res.json(rows);
-    } catch(err) {
-        return res.status(500).json({
-            message: err.message
-        })
-    }
-})
+router.get("/lista",
+  authMiddleware,
+  statusMiddleware,
+  listarChequeController
+);
 
 router.put(
   "/:numero/editar",

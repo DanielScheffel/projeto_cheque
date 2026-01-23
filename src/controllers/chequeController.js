@@ -1,4 +1,4 @@
-import { criarChequeService } from "../services/serviceCheque.js";
+import { criarChequeService, listarChequeService } from "../services/serviceCheque.js";
 
 export async function criarChequeController(req, res) {
     const { numerocheque, valor, empresa, contato } = req.body;
@@ -22,5 +22,16 @@ export async function criarChequeController(req, res) {
         return res.status(400).json({
             message: err.message
         })
+    }
+}
+
+export async function listarChequeController(req, res) {
+    try {
+        const cheques = await listarChequeService();
+        return res.json(cheques)
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
     }
 }
