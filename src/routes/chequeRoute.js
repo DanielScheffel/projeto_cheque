@@ -3,7 +3,7 @@ import pool from "../database/database.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { statusMiddleware } from "../middlewares/statusMiddleware.js";
 import { gerenteMiddleware } from "../middlewares/gerenteMiddleware.js";
-import { criarChequeController, editarChequeController, listarChequeController } from "../controllers/chequeController.js";
+import { atualizarStatusChequeController, criarChequeController, deletarChequeController, editarChequeController, listarChequeController } from "../controllers/chequeController.js";
 
 
 const router = express.Router();
@@ -29,89 +29,19 @@ router.put("/:numero/editar",
 );
 
 
-router.put("/:numero/status", authMiddleware, statusMiddleware, gerenteMiddleware, async (req, res) => {
-    
-    const { numero } = req.params;
-    const { status } = req.body;
+router.put("/:numero/status",
+    authMiddleware,
+    statusMiddleware,
+    gerenteMiddleware,
+    atualizarStatusChequeController
+)
 
-    try {
-        
-        const statusPermitidos = ["recebido", "guardado", "depositado"];
+router.delete("/:numero/deletar",
+    authMiddleware,
+    statusMiddleware,
+    gerenteMiddleware,
+    deletarChequeController
 
-        if(!status || !statusPermitidos.includes(status)) {
-            return res.status(400).json({
-                message: "Status inválido"
-            });
-        }
-
-        const [rows] = await pool.query(
-            "SELECT status_cheque FROM cheque WHERE numerocheque = ?", [numero]
-        );
-
-        if(rows.length === 0){
-            return res.status(404).json({
-                message: "Cheque não encontrado"
-            })
-        }
-
-        const statusAtual = rows[0].status_cheque;
-
-        const transicoes = {
-            recebido: ["guardado"],
-            guardado: ["depositado"],
-            depositado: []
-        }
-
-        if(!transicoes[statusAtual].includes(status)) {
-            return res.status(400).json({
-                message: `Transição inválida: ${statusAtual} -> ${status}`
-            })
-        }
-
-        await pool.query(
-            "Update cheque SET status_cheque = ? WHERE numerocheque = ?", [status, numero]
-        );
-
-        return res.json({
-            message: `Status do cheque atualizado para ${status}`
-        })
-
-    } catch (err) {
-        return res.status(500).json({
-            message: err.message
-        });
-    }
-
-})
-
-router.delete(
-  "/:numero/deletar",
-  authMiddleware,
-  statusMiddleware,
-  gerenteMiddleware,
-  async (req, res) => {
-    const { numero } = req.params;
-
-    try {
-      const [rows] = await pool.query(
-        "SELECT numerocheque FROM cheque WHERE numerocheque = ?",
-        [numero]
-      );
-
-      if (rows.length === 0) {
-        return res.status(404).json({ message: "Cheque não encontrado" });
-      }
-
-      await pool.query(
-        "DELETE FROM cheque WHERE numerocheque = ?",
-        [numero]
-      );
-
-      return res.json({ message: "Cheque removido com sucesso" });
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
-    }
-  }
 );
 
 

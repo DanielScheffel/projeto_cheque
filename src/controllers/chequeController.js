@@ -1,4 +1,4 @@
-import { criarChequeService, editarChequeService, listarChequeService } from "../services/serviceCheque.js";
+import { atualizarStatusChequeService, criarChequeService, deletarChequeService, editarChequeService, listarChequeService } from "../services/serviceCheque.js";
 
 export async function criarChequeController(req, res) {
     const { numerocheque, valor, empresa, contato } = req.body;
@@ -55,6 +55,50 @@ export async function editarChequeController(req, res) {
         });
     } catch (err) {
         return res.status(404).json({
+            message: err.message
+        });
+    }
+
+}
+
+export async function atualizarStatusChequeController(req, res) {
+    
+    const { numero } = req.params;
+    const { status } = req.body;
+
+    try {
+        await atualizarStatusChequeService({
+            numero,
+            status
+        });
+
+        return res.json({
+            message: `Status do cheque atualizado para ${status}`
+        });
+    } catch (err) {
+        return res.status(400).json({
+            message: err.message
+        });
+    }
+
+}
+
+export async function deletarChequeController(req, res) {
+    
+    const { numero } = req.params;
+
+    try {
+        await deletarChequeService(numero);
+
+        return res.json({
+            message: "Cheque removido com sucesso"
+        });
+    } catch (err) {
+        if(err.message === "Cheque não encontrado") {
+            return res.status(404).json({ message: err.message });
+        }
+
+        return res.status(500).json({
             message: err.message
         });
     }
