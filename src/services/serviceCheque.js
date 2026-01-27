@@ -21,11 +21,19 @@ export async function criarChequeService({numerocheque, valor, empresa, contato,
 }
 
 export async function listarChequeService() {
-    
     const [rows] = await pool.query(
-        `SELECT numerocheque, valor, empresa, data, contato, gerencia_usuario, status_cheque
-        FROM cheque`
-    )
+        `SELECT 
+        c.numerocheque,
+        c.valor,
+        c.empresa,
+        c.data,
+        c.contato,
+        c.status_cheque,
+        u.nome AS usuario_nome
+        FROM cheque c
+        JOIN gerencia u ON u.usuario = c.gerencia_usuario;
+        `,
+    );
 
     return rows;
 }
